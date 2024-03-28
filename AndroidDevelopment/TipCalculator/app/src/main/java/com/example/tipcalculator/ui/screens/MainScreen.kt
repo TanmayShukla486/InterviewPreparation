@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -19,11 +20,13 @@ import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -43,26 +48,24 @@ import com.example.tipcalculator.ui.theme.bungeeFamily
 import com.example.tipcalculator.ui.theme.ptFamily
 
 
-
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier
 ) {
-    val tipCalculator : (Double, Int) -> Double  = {
-            billAmt, tipPercentage ->
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val tipCalculator: (Double, Int) -> Double = { billAmt, tipPercentage ->
         billAmt * tipPercentage / 100
     }
     val perPersonValue = remember {
         mutableDoubleStateOf(0.0)
     }
-    val tip = remember{
+    val tip = remember {
         mutableDoubleStateOf(0.0)
     }
-    val billCalculation: (Double, Int, Int) -> Double = {
-        billAmt, peopleCount, tipPercentage ->
+    val billCalculation: (Double, Int, Int) -> Double = { billAmt, peopleCount, tipPercentage ->
         val totalTips = tipCalculator(billAmt, tipPercentage)
         tip.doubleValue = totalTips
-        if (peopleCount > 0 ) (billAmt+ totalTips)/ peopleCount else 0.0
+        if (peopleCount > 0) (billAmt + totalTips) / peopleCount else 0.0
     }
 
     val peopleCount = remember {
@@ -71,18 +74,21 @@ fun MainScreen(
     val textFieldValue = remember {
         mutableStateOf("")
     }
-    val tipPercentage = 33
-    val onTextFieldValueChange: (String) -> Unit = {
-        value ->
+    val sliderState = remember {
+        mutableFloatStateOf(0f)
+    }
+    val tipPercentage = (sliderState.floatValue * 100).toInt()
+    val onTextFieldValueChange: (String) -> Unit = { value ->
         if (value.isNotBlank()) {
             val billAmt = value.toDouble()
-            perPersonValue.doubleValue = billCalculation(billAmt, peopleCount.intValue, tipPercentage)
+            perPersonValue.doubleValue =
+                billCalculation(billAmt, peopleCount.intValue, tipPercentage)
         } else {
             tip.doubleValue = 0.0
             perPersonValue.doubleValue = 0.0
         }
     }
-    Surface (
+    Surface(
         color = Color(0xffeffaf1)
     ) {
         Column {
@@ -99,7 +105,9 @@ fun MainScreen(
                     peopleCount = peopleCount,
                     tip = tip,
                     tipPercentage = tipPercentage,
-                    textColor = Color.White
+                    textColor = Color.White,
+                    keyboardController = keyboardController,
+                    sliderState = sliderState
                 )
             }
         }
@@ -138,7 +146,7 @@ fun TipDisplayCard(
                     color = Color.White
                 )
                 Text(
-                    text = "$" + (Math.round(totalTips.value * 100)/100.0).toString(),
+                    text = "$" + (Math.round(totalTips.value * 100) / 100.0).toString(),
                     style = TextStyle(
                         fontFamily = bungeeFamily,
                         fontWeight = FontWeight.ExtraBold,
@@ -161,9 +169,11 @@ fun MainContent(
     peopleCount: MutableState<Int>,
     tip: MutableState<Double>,
     tipPercentage: Int,
-    textColor: Color
+    textColor: Color,
+    keyboardController: SoftwareKeyboardController?,
+    sliderState: MutableState<Float>
 ) {
-    Surface (
+    Surface(
         modifier = modifier
             .fillMaxWidth()
             .height(500.dp)
@@ -173,7 +183,7 @@ fun MainContent(
         shadowElevation = 8.dp,
         color = Color(0xff95D5B2)
     ) {
-        Column (
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(12.dp)
@@ -181,18 +191,45 @@ fun MainContent(
             InputTextField(
                 textFieldValue = textFieldValue,
                 labelText = "Enter Bill",
-                onTextFieldChange = onTextFieldChange, textColor = textColor)
+                onTextFieldChange = onTextFieldChange, textColor = textColor,
+                onAction = KeyboardActions(
+                    onNext = { keyboardController?.hide() }
+                )
+            )
             Spacer(modifier = modifier.height(24.dp))
             SplitPeopleRow(
                 peopleCount = peopleCount,
-                onPeopleCountChange =  {onTextFieldChange.invoke(textFieldValue.value)})
+                onPeopleCountChange = { onTextFieldChange.invoke(textFieldValue.value) })
             Spacer(modifier = modifier.height(24.dp))
             CustomDataRow(
                 title = "Tip Amount",
                 mutableData = tip,
                 identifier = "$",
-                textColor = textColor)
+                textColor = textColor
+            )
             Spacer(modifier = modifier.height(24.dp))
+            TipRow(
+                sliderState = sliderState,
+                tipPercentage = tipPercentage,
+                textColor = textColor,
+                onSliderChange = {onTextFieldChange.invoke(textFieldValue.value)}
+            )
+        }
+    }
+}
+
+@Composable
+fun TipRow(
+    modifier: Modifier = Modifier,
+    sliderState: MutableState<Float>,
+    tipPercentage: Int,
+    textColor: Color,
+    onSliderChange: () -> Unit
+) {
+    Surface (
+        color = Color(0xff95D5B2)
+    ) {
+        Column {
             Text(
                 modifier = modifier.padding(horizontal = 100.dp),
                 text = "Tip Percentage = $tipPercentage",
@@ -200,6 +237,14 @@ fun MainContent(
                 color = textColor,
                 fontSize = 18.sp
             )
+            Slider(
+                modifier = modifier.padding(horizontal = 16.dp),
+                value = sliderState.value,
+                onValueChange = {
+                sliderState.value = it
+                onSliderChange.invoke()
+            },
+                steps = 10)
         }
     }
 }
@@ -210,15 +255,15 @@ fun CustomDataRow(
     title: String = "Title",
     mutableData: MutableState<Double>,
     identifier: String,
-    textColor:Color
+    textColor: Color,
 ) {
-    Row (
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column (
+        Column(
             modifier = modifier.fillMaxWidth(0.6f)
         ) {
             Text(
@@ -227,7 +272,7 @@ fun CustomDataRow(
                 color = textColor
             )
         }
-        Column (modifier = modifier.fillMaxWidth()) {
+        Column(modifier = modifier.fillMaxWidth()) {
             Text(
                 text = identifier + mutableData.value.toString(),
                 fontFamily = ptFamily,
@@ -243,25 +288,25 @@ fun SplitPeopleRow(
     peopleCount: MutableState<Int>,
     onPeopleCountChange: () -> Unit
 ) {
-    Row (
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column (
+        Column(
             modifier.fillMaxWidth(0.6f)
         ) {
             Text(text = "Split", fontFamily = ptFamily)
         }
-        Column (
+        Column(
             modifier.fillMaxWidth()
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = {
-                    if(peopleCount.value > 1) {
+                    if (peopleCount.value > 1) {
                         peopleCount.value--
                         onPeopleCountChange.invoke()
                     }
@@ -289,7 +334,8 @@ fun InputTextField(
     keyboardType: KeyboardType = KeyboardType.Number,
     imeAction: ImeAction = ImeAction.Next,
     onTextFieldChange: (String) -> Unit,
-    textColor: Color
+    textColor: Color,
+    onAction: KeyboardActions = KeyboardActions.Default
 ) {
     OutlinedTextField(
         modifier = modifier
@@ -317,13 +363,14 @@ fun InputTextField(
         textStyle = TextStyle(
             fontFamily = ptFamily,
             color = textColor
-        )
+        ),
+        keyboardActions = onAction
     )
 }
 
 
 @SuppressLint("UnrememberedMutableState")
-@Preview (showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun PreviewMainContent() {
     MainContent(
@@ -331,7 +378,9 @@ fun PreviewMainContent() {
         peopleCount = mutableIntStateOf(0),
         tip = mutableDoubleStateOf(0.0),
         tipPercentage = 33,
-        textColor = Color.White
+        textColor = Color.White,
+        keyboardController = LocalSoftwareKeyboardController.current,
+        sliderState = mutableFloatStateOf(0f)
     )
 }
 

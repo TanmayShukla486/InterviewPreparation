@@ -33,8 +33,8 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = honkFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
+        fontSize = 28.sp,
+        lineHeight = 30.sp,
         letterSpacing = 0.sp
     )
     /* Other default text styles to override

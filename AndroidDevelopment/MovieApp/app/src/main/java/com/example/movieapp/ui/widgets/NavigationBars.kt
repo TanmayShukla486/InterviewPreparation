@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TopNavBar(
+    // color to be added : FFFFA1
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     title: String = "Movie App",

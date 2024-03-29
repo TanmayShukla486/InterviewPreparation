@@ -92,7 +92,7 @@ fun MovieRow(
                         AnnotatedText(heading = "Cast", value = movie.cast)
                         AnimatedVisibility(visible = isExpanded.value) {
                             Column {
-                                AnnotatedText(heading = "Description", value = movie.desc)
+                                AnnotatedText(heading = "Description", value = movie.plot)
                                 Spacer(modifier = modifier.height(24.dp))
                                 Button(onClick = {onClickButton.invoke(movie)}) {
                                     Text("Show More")

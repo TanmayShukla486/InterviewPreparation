@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.ui.screens.MainScreen
+import com.example.movieapp.ui.screens.components.MovieScreenBody
 
 @Composable
 fun Navigation() {
@@ -14,7 +15,7 @@ fun Navigation() {
 
         }
         composable("main-screen") {
-            MainScreen(navController = navController, data = emptyList())
+            MovieScreenBody()
         }
         composable("movie-screen") {
 

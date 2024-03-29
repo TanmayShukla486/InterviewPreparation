@@ -2,7 +2,7 @@ package com.example.movieapp.data
 
 val dummyMovie = Movie(
     name = "The Greatest Showman",
-    desc = "An entertaining musical tale of an ordinary tailor's son who has a knack for show" +
+    plot = "An entertaining musical tale of an ordinary tailor's son who has a knack for show" +
             " business, and wants to give the best life to his family and the hurdles he faces " +
             "in life and how grows as a person.",
     rating = 7.5f,

@@ -24,7 +24,6 @@ fun MovieScreen (
                 modifier = modifier.padding(it)
             ) {
                 MovieScreenBody(
-                    navController = navController,
                     movie = movie
                 )
             }

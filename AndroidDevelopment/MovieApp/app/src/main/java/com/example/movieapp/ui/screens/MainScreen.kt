@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.data.Movie
 import com.example.movieapp.ui.screens.components.MainScreenBody
+import com.example.movieapp.ui.widgets.ScreenShotRow
 import com.example.movieapp.ui.widgets.TopNavBar
 
 @Composable
@@ -33,10 +34,7 @@ fun MainScreen(
             Surface(
                 modifier = modifier.padding(it)
             ) {
-                MainScreenBody(
-                    navController = navController,
-                    movies = data
-                )
+                ScreenShotRow()
             }
         }
     }

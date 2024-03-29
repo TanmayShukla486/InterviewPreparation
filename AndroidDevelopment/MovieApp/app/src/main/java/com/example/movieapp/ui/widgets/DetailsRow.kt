@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -20,7 +21,12 @@ fun DetailsRow(
         LazyColumn {
             items(details.entries.toList()){
                 detail ->
-                    AnnotatedText(heading = detail.key, value = detail.value)
+                    AnnotatedText(
+                        heading = detail.key,
+                        value = detail.value,
+                        titleColor = Color.Black,
+                        bodyColor = Color.DarkGray
+                    )
             }
         }
     }

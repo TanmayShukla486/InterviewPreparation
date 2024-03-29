@@ -111,21 +111,25 @@ fun MovieRow(
 @Composable
 fun AnnotatedText(
     heading: String,
-    value: String
+    value: String,
+    titleFontWeight: FontWeight = FontWeight.Bold,
+    titleColor: Color = Color.DarkGray,
+    bodyFontWeight: FontWeight = FontWeight.Normal,
+    bodyColor: Color = Color.Gray
 ) {
     Text(
         buildAnnotatedString {
             withStyle(style = SpanStyle(
-                color = Color.DarkGray,
+                color = titleColor,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = titleFontWeight
             )) {
                 append(text = "${heading}:\t")
             }
             withStyle(style = SpanStyle(
-                color = Color.Gray,
+                color = bodyColor,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
+                fontWeight = bodyFontWeight
             )) {
                 append(text = value)
             }

@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +41,7 @@ fun MovieRow(
     movie: Movie = dummyMovie,
 ) {
     val isExpanded = rememberSaveable {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
     Surface (
         modifier = modifier

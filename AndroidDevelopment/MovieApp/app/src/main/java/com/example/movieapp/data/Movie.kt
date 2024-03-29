@@ -5,7 +5,9 @@ data class Movie(
     val desc: String,
     val rating: Float,
     val director: String,
-    val producer: String,
-    val income: Int,
-    val thumbnail: String
+    val writer: String,
+    val revenue: Float,
+    val thumbnail: String,
+    val cast: String,
+    val screenshots: List<String>
 )

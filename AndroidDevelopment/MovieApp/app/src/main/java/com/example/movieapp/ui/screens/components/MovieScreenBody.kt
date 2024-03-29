@@ -1,7 +1,10 @@
 package com.example.movieapp.ui.screens.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,7 +28,9 @@ fun MovieScreenBody(
     modifier: Modifier = Modifier,
     movie: Movie = dummyMovie
 ) {
-    Column {
+    Column (
+        modifier.padding(horizontal = 8.dp)
+    ) {
         Text(
             modifier = modifier.fillMaxWidth(),
             text = "ScreenShots",
@@ -33,7 +38,9 @@ fun MovieScreenBody(
         )
         ScreenShotRow()
         Card (
-            modifier = modifier.padding(12.dp),
+            modifier = modifier
+                .padding(12.dp)
+                .fillMaxHeight(),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ),
@@ -44,6 +51,7 @@ fun MovieScreenBody(
             TitleRow(
                 title = movie.name
             )
+            Spacer(modifier = modifier.height(24.dp))
             // Includes all the details such as year of release, rating, director
             DetailsRow(
                 details = mapOf(

@@ -22,7 +22,12 @@ fun MainScreenBody (
     ) {
         LazyColumn {
             items(10) {
-                MovieRow()
+                MovieRow(
+                    onClickButton = {
+                        movie ->
+                        navController.navigate("detailsScreen")
+                    }
+                )
             }
         }
     }

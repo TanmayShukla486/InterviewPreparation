@@ -2,6 +2,7 @@ package com.example.movieapp.ui.screens.components
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,17 +16,19 @@ import com.example.movieapp.ui.widgets.MovieRow
 fun MainScreenBody (
     modifier: Modifier = Modifier,
     navController: NavController,
-    movies: List<Movie> = emptyList()
+    movies: List<Movie>
 ) {
     Surface(
         modifier = modifier.fillMaxSize()
     ) {
         LazyColumn {
-            items(10) {
+            items(movies) {
                 MovieRow(
+                    movie = it,
                     onClickButton = {
                         movie ->
-                        navController.navigate("detailsScreen")
+
+                        navController.navigate("detailsScreen/${movie.title}")
                     }
                 )
             }
@@ -36,5 +39,5 @@ fun MainScreenBody (
 @Preview (showBackground = true)
 @Composable
 fun PreviewMainScreenBody() {
-    MainScreenBody(navController = rememberNavController())
+//    MainScreenBody(navController = rememberNavController())
 }

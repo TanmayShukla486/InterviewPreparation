@@ -1,7 +1,9 @@
 package com.example.movieapp.ui.widgets
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,7 +18,9 @@ fun DetailsRow(
     details: Map<String, String> = emptyMap()
 ) {
     Row (
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
         LazyColumn {
             items(details.entries.toList()){
@@ -27,6 +31,7 @@ fun DetailsRow(
                         titleColor = Color.Black,
                         bodyColor = Color.DarkGray
                     )
+                    Spacer(modifier = modifier.height(8.dp))
             }
         }
     }

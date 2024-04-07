@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
@@ -28,25 +29,28 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.movieapp.R
 import com.example.movieapp.data.Movie
-import com.example.movieapp.data.dummyMovie
+import kotlin.math.ceil
 
 @Composable
 fun MovieRow(
     modifier: Modifier = Modifier,
     onClickButton: (Movie) -> Unit = {},
-    movie: Movie = dummyMovie,
+    movie: Movie,
 ) {
     val isExpanded = rememberSaveable {
         mutableStateOf(false)
     }
+    val expandedHeight: Dp = if (movie.plot.length <= 200) 425.dp else 525.dp
     Surface (
         modifier = modifier
             .fillMaxWidth()
-            .height(if (isExpanded.value) 350.dp else 175.dp)
+            .height(if (isExpanded.value) expandedHeight else 175.dp)
             .padding(16.dp)
             .clickable { isExpanded.value = !isExpanded.value },
         shape = RoundedCornerShape(12.dp),
@@ -65,10 +69,11 @@ fun MovieRow(
                     .padding(6.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.thumbnail),
-                    contentDescription = null,
-                    modifier = modifier.clip(RoundedCornerShape(8.dp)))
+                AsyncImage(
+                    modifier = modifier.clip(RoundedCornerShape(8.dp)),
+                    model = movie.poster,
+                    contentDescription = null
+                )
             }
             // Column composable for the text data
             Column {
@@ -77,7 +82,7 @@ fun MovieRow(
                     modifier = modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = movie.name,
+                        text = movie.title,
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 20.sp
                     )
@@ -88,13 +93,18 @@ fun MovieRow(
                 ) {
                     Column {
                         AnnotatedText(heading = "Director", value = movie.director)
-                        AnnotatedText(heading = "Rating", value = movie.rating.toString())
-                        AnnotatedText(heading = "Cast", value = movie.cast)
+                        AnnotatedText(heading = "Rating", value = movie.rating)
+                        AnnotatedText(heading = "Cast", value = movie.actors)
                         AnimatedVisibility(visible = isExpanded.value) {
                             Column {
                                 AnnotatedText(heading = "Description", value = movie.plot)
                                 Spacer(modifier = modifier.height(24.dp))
-                                Button(onClick = {onClickButton.invoke(movie)}) {
+                                Button(
+                                    modifier = modifier.size(width = 200.dp, height = 50.dp),
+                                    onClick = {
+                                        isExpanded.value = !isExpanded.value
+                                        onClickButton.invoke(movie)
+                                    }) {
                                     Text("Show More")
                                 }
                             }
@@ -142,5 +152,5 @@ fun AnnotatedText(
 @Preview (showBackground = true)
 @Composable
 fun PreviewMovieRow() {
-    MovieRow()
+//    MovieRow()
 }

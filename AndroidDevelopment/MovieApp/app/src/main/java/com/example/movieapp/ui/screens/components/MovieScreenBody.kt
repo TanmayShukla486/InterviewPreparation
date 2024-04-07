@@ -15,10 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.data.Movie
-import com.example.movieapp.data.dummyMovie
 import com.example.movieapp.ui.widgets.DetailsRow
 import com.example.movieapp.ui.widgets.ScreenShotRow
 import com.example.movieapp.ui.widgets.TitleRow
@@ -26,8 +23,9 @@ import com.example.movieapp.ui.widgets.TitleRow
 @Composable
 fun MovieScreenBody(
     modifier: Modifier = Modifier,
-    movie: Movie = dummyMovie
+    movie: Movie?
 ) {
+    if (movie != null) {
     Column (
         modifier.padding(horizontal = 8.dp)
     ) {
@@ -36,8 +34,10 @@ fun MovieScreenBody(
             text = "ScreenShots",
             style = MaterialTheme.typography.titleLarge
         )
-        ScreenShotRow()
-        Card (
+        ScreenShotRow(
+            list = movie.images
+        )
+        Card(
             modifier = modifier
                 .padding(12.dp)
                 .fillMaxHeight(),
@@ -45,32 +45,31 @@ fun MovieScreenBody(
                 defaultElevation = 8.dp
             ),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xffFFFFA1)
+                containerColor = Color.LightGray
             )
         ) {
             TitleRow(
-                title = movie.name
+                title = movie.title
             )
             Spacer(modifier = modifier.height(24.dp))
             // Includes all the details such as year of release, rating, director
             DetailsRow(
                 details = mapOf(
                     "Director" to movie.director,
-                    "Writer" to movie.writer,
-                    "Rating" to movie.rating.toString(),
-                    "Year of Release" to movie.release,
-                    "Cast" to movie.cast,
+                    "Genre" to movie.genre,
+                    "Rating" to movie.rating,
                     "Plot" to movie.plot,
-                    "Production" to movie.production,
+                    "Actors" to movie.actors,
+                    "Year of Release" to movie.year
+                    )
                 )
-            )
+             }
         }
-
     }
 }
 
 @Preview (showBackground = true)
 @Composable
 fun PreviewMovieScreenBody() {
-    MovieScreenBody()
+//    MovieScreenBody()
 }

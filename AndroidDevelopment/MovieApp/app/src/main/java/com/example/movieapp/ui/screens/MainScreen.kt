@@ -26,7 +26,7 @@ fun MainScreen(
             topBar = {
                  TopNavBar(
                      modifier = modifier.height(50.dp),
-                     onBackClick = { /*TODO*/ }
+                     onBackClick = { navController.popBackStack() }
                  )
             },
             bottomBar = {}
@@ -34,7 +34,10 @@ fun MainScreen(
             Surface(
                 modifier = modifier.padding(it)
             ) {
-                ScreenShotRow()
+                MainScreenBody(
+                    navController = navController,
+                    movies = data
+                )
             }
         }
     }
